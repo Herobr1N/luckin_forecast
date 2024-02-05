@@ -1,0 +1,64 @@
+﻿version: 1
+# 是否覆盖掉已经存在的loggers
+disable_existing_loggers: True
+
+formatters:
+  console_dev:
+    format: "%(asctime)s【%(levelname)-s】Dev %(filename)-8s(%(lineno)s):- %(message)s"
+  console_prod:
+    format: "%(asctime)s【%(levelname)-s】Prod %(filename)-8s(%(lineno)s):- %(message)s"
+  file_dev:
+    format: "%(asctime)s【%(levelname)-s】Dev %(filename)-8s(%(lineno)s):- %(message)s"
+  file_prod:
+    format: "%(asctime)s【%(levelname)-s】Prod %(filename)-8s(%(lineno)s):- %(message)s"
+
+handlers:
+  console_dev:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: console_dev
+    stream: ext://sys.stdout
+
+  console_prod:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: console_prod
+    stream: ext://sys.stdout
+
+  file_dev:
+    class: logging.handlers.TimedRotatingFileHandler
+    filename: /projects/log/lk_jupyter.log
+    # 日期生成间隔,D->Day
+    when: D
+    # 文件粒度
+    interval: 1
+    # 保留日志个数，0->保留全部
+    backupCount: 30
+    level: INFO
+    formatter: file_dev
+
+  file_prod:
+    class: logging.handlers.TimedRotatingFileHandler
+    filename: /projects/log/lk_jupyter.log
+    when: D
+    interval: 1
+    backupCount: 30
+    level: INFO
+    formatter: file_prod
+
+loggers:
+  logger_std_dev:
+    level: DEBUG
+    handlers: [console_dev]
+    propagate: no
+
+  logger_file:
+    level: INFO
+    handlers: [file_dev]
+    propagate: no
+
+
+root:
+  level: INFO
+  handlers: [console_prod,file_prod]
+  propagate: no
